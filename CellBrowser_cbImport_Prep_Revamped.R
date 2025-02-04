@@ -1,11 +1,7 @@
-# USAGE: 1. module load R/4.2.0
-# 2. Rscript Automated_CellBrowser_Cmds_SeuratObj_prep.R </this/is/directory/path/random_seurat_object.rds> <NAME> <seurat_default_metadata_column> </output/directory/> <"ADT"/"RNA"> 
-
-
-# This is only for Seurat objects that have RNA and ADT assay slots filled
+# Tyler Therron, MS
 
 #LIBRARY PATH
-libs <- .libPaths("/home/ttm3567/63_tylert/DEseq_libpath_dir/")
+libs <- .libPaths("/path/")
 
 library(Seurat)
 library(dplyr)
@@ -17,27 +13,15 @@ args <- commandArgs(TRUE) # allows script to run in CmdLine
 
 seurat_object_final <- as.character(args[1]) # INPUT Seurat S4 .rds object locale
 desired_output_name <- as.character(args[2]) # NAME of Seurat object that is output
-#default_ident <- as.character(args[3]) # HAS to be a FACTOR, will be loaded identity CB
 output_directory <- as.character(args[3]) # OUTPUT locale - include the '/' at the end because of how code writes the output 
+
 #  ================================= ================================= ================================= ================================= ================================= ================================= ================================= ================================= =================================
-# seurat_object_final <- as.character("/Users/ttm3567/Documents/July2024/Jess_Robj/CD64pos_CITEseq_edits2.Rds") # INPUT Seurat S4 .rds object locale
+# seurat_object_final <- as.character("CD64pos_CITEseq_edits2.Rds") # INPUT Seurat S4 .rds object locale
 # desired_output_name <- as.character("TEST_cbPrep") # NAME of Seurat object that is output
 # default_ident <- as.character("seurat_clusters") # HAS to be a FACTOR, will be loaded identity CB
 # output_directory <- as.character("/Users/ttm3567/Documents/August2024/")
 # ===================================================================================================
-# STEPS that sould be COMPLETED before using this script
 
-# RData to RDS conversion:
-    # load("/Users/ttm3567/Documents/August2024/sarcoidosis.macroHarmony.v2.RData")
-    # saveRDS(macroHarmony,"/Users/ttm3567/Documents/August2024/sarcoidosis_macroHarmony_v2.Rds")
-
-# 1. remove desired metadata columns
-    #p13_merged_20230722@meta.data[["seurat_clusters"]] <- NULL
-
-# 2.  rename any metadata columns as desired
-    #colnames(tmrc2@meta.data)[colnames(tmrc2@meta.data) == "predicted.id"] <- "Published Annotations"
-
-# ===================================================================================================
 #. -------------- FXNs --------------
 # Function to check if the data contains non-integer values
 is_normalized <- function(seurat_obj) {
@@ -173,17 +157,6 @@ print("read in data")
 
 seurat_object_readIN@active.assay <- 'RNA'
 print("active assay is forsure RNA now")
-
-# replace SCT assay data with RNA data for a v4 Seurat object. 20241127
-# avoiding cbImport Error for this Processed_ImmuneCells.rds b/c 
-# SCT data is not even going to be used in the actual cell browser interface
-#seurat_object_readIN@assays[["RNA"]]@counts <- seurat_object_readIN@assays[["RNA"]]@data
-
-
-# this is to make sure the markers are set for the published annotation
-# Use the function to set the default ident
-#default_ident <- choose_valid_ident(seurat_object_readIN)
-#print("successfully found and chose a default metadata identity")
 
 default_ident <- seurat_object_readIN@active.ident
 
